@@ -2,24 +2,21 @@
 #include <raylib.h>
 #include <raymath.h>
 
-namespace Engine {
+
 
     class Player {
     public:
-        Player(Vector3 startPos = { 0, 0.5f, 0 });
-        void update(float deltaTime);
-        void render() const;
+        Player(Vector3 startPos = { 0.0f, 0.5f, 0.0f });
+
+        void update(float deltaTime);   // двигает игрока
+        void render() const;            // рисует куб
 
         Vector3 getPosition() const;
         void setPosition(Vector3 pos);
 
-        void setSpeed(float s);
-        float getSpeed() const;
-
     private:
-        Vector3 position;
-        float speed;
-        float size;
+        Vector3 position;   // где игрок
+        float speed;        // как быстро двигается
+        float size;         // размер куба
     };
 
-}
