@@ -1,0 +1,36 @@
+
+
+set(RAYLIB_PATH "G:/core/repos/lib/raylib/raylib")
+set(LUAJIT_PATH "G:/core/repos/LuaJIT-2.1/src")
+
+set (SRC_DIRS voxel player)
+
+foreach(DIR ${SRC_DIRS})
+    file(GLOB_RECURSE DIR_SOURCES "${DIR}/*.cpp")
+    file(GLOB_RECURSE DIR_HEADERS "${DIR}/*.h")
+    list(APPEND SOURCES ${DIR_SOURCES})
+    list(APPEND HEADERS ${DIR_HEADERS})
+endforeach()
+
+
+
+
+
+add_library(basic STATIC ${SOURCES} ${HEADERS})
+
+
+target_include_directories(basic PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${RAYLIB_PATH}/src
+    ${LUAJIT_PATH}
+)
+
+target_link_libraries(basic PUBLIC
+    ${RAYLIB_PATH}/src/libraylib.a
+    ${LUAJIT_PATH}/libluajit-5.1.dll.a
+)
+
+if(WIN32)
+    target_link_libraries(basic PUBLIC winmm gdi32 opengl32 ws2_32)
+endif()
+

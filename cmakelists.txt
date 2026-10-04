@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.16)
+project(echo LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(LUAJIT_PATH "G:/core/repos/LuaJIT-2.1/src")
+
+
+add_subdirectory(src)
+
+
+
+add_executable(echo src/main.cpp)
+
+
+target_link_libraries(echo PRIVATE basic)
+
+
+add_custom_command(TARGET echo POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${LUAJIT_PATH}/lua51.dll
+    $<TARGET_FILE_DIR:echo>
+)
+
+
+
+
+
