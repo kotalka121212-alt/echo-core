@@ -1,16 +1,24 @@
-#ifndef CAMERA_H
-#define CAMERA_H
-
 #pragma once
+#include <raylib.h>
+#include <raymath.h>
 
-class Camera
-{
-public:
-    Camera();
-    ~Camera();
 
-private:
 
-};
+    class FlyCamera {
+    public:
+        FlyCamera(Vector3 startPos = { 0.0f, 2.0f, 5.0f });
 
-#endif
+        void update(float deltaTime);
+        Camera3D get() const;
+
+        Vector3 getPosition() const;
+        void setPosition(Vector3 pos);
+
+    private:
+        Camera3D camera;
+        float yaw;
+        float pitch;
+        float moveSpeed;
+        float mouseSensitivity;
+    };
+

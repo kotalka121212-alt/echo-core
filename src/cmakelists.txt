@@ -3,7 +3,7 @@
 set(RAYLIB_PATH "G:/core/repos/lib/raylib/raylib")
 set(LUAJIT_PATH "G:/core/repos/LuaJIT-2.1/src")
 
-set (SRC_DIRS voxel player)
+set (SRC_DIRS voxel player entity model camera)
 
 foreach(DIR ${SRC_DIRS})
     file(GLOB_RECURSE DIR_SOURCES "${DIR}/*.cpp")
