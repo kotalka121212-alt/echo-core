@@ -1,27 +1,41 @@
 #pragma once
 #include <raylib.h>
-#include <memory>
+#include <string>
 
-namespace Engine {
+class FlyCamera;    // Вперед-объявление камеры
+class ModelManager; // Вперед-объявление менеджера моделей
 
-    class ModelComponent;   // ← forward declaration, этого достаточно для shared_ptr
+class Entity {
+public:
+    Entity(Vector3 startPos = { 0.0f, 0.0f, 0.0f });
+    virtual ~Entity() = default;
 
-    class Entity {
-    public:
-        Entity(Vector3 startPos = { 0.0f, 0.0f, 0.0f });
-        virtual ~Entity() = default;
+    virtual void update(float deltaTime) {}
+    
+    // Метод отрисовки теперь принимает ссылку на менеджер моделей
+    virtual void render(const ModelManager& modelMgr) const; 
 
-        virtual void update(float deltaTime) {}
-        virtual void render() const;
+    Vector3 getPosition() const { return position; }
+    void setPosition(Vector3 pos) { position = pos; }
 
-        void setModel(std::shared_ptr<ModelComponent> m) { model = m; }
-        bool hasModel() const { return model != nullptr; }
+    // Установка текстового имени модели (например, "hero" или "goblin")
+    void setModelName(const std::string& name) { modelName = name; }
+    std::string getModelName() const { return modelName; }
+    bool hasModel() const { return !modelName.empty(); }
 
-    protected:
-        Vector3 position;
-        std::shared_ptr<ModelComponent> model;
-    };
+    // Привязка камеры
+    void attachCamera(FlyCamera* cam) { camera = cam; }
+    bool hasCamera() const { return camera != nullptr; }
+    FlyCamera* getCamera() const { return camera; }
 
-}
+    bool isAlive() const { return alive; }
+    void kill() { alive = false; }
+
+protected:
+    Vector3 position;
+    bool alive;
+    std::string modelName;     // Имя модели, зарегистрированное в ModelManager
+    FlyCamera* camera;         // Камера, привязанная к этой сущности
+};
 
 
