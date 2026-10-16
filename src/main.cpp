@@ -24,14 +24,14 @@ int main() {
     // 2. Архитектурная связка: привязываем их друг к другу
     player.attachCamera(&cam);
     cam.setTargetEntity(&player);
-    cam.setMode(CustomCameraMode::FOLLOW); // Включаем режим от 3-го лица
+    cam.setMode(CustomCameraMode::FLY); // Включаем режим от 3-го лица
 
     // 3. Инициализируем менеджер моделей
     ModelManager modelMgr;
     
     // ВАЖНО: Добавили расширение .glb (или укажи .obj, если это обжект)
     // Загружаем модель под именем "character" прямо в игрока!
-    if (modelMgr.load("character", "../Untitled.glb")) {
+    if (modelMgr.load("character", "../Untitled.gl")) {
         player.setModelName("character"); // Теперь игрок знает, что он должен рисовать эту модель!
     } else {
         std::cout << "[ERROR] Не удалось загрузить модель игрока! Бегаем кубиком." << std::endl;

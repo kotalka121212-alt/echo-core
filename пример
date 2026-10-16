@@ -1,0 +1,79 @@
+#pragma once
+#include <raylib.h>
+#include <vector>
+
+// 1. СТРУКТУРА ОДНОГО ВОКСЕЛЯ (Всего 4 байта!)
+struct Voxel {
+    unsigned char id;      // 1 байт: Тип (0 - воздух, 1 - камень, 2 - трава)
+    unsigned char volume;  // 1 байт: Объем (0 - пустой, 255 - полный куб. Влияет на форму меша!)
+    char mass;             // 1 байт: Масса (для просчета веса и разрушений)
+    unsigned char padding; // 1 байт: Запас на будущее (или подкраску)
+};
+
+// 2. КЛАСС КУБИЧЕСКОГО ЧАНКА (16х16х16)
+class Chunk {
+public:
+    static const int SIZE = 16;
+    Voxel voxels[SIZE][SIZE][SIZE];
+    bool isDirty;          // Флаг: нужно ли перерисовывать меш
+    Mesh mesh;             // Сгенерированный гладкий меш для Raylib
+    bool hasMesh;          // Загружен ли меш в видеокарту
+
+    Chunk() : isDirty(true), hasMesh(false), mesh{0} {
+        // Изначально заполняем чанк чистым воздухом
+        for (int x = 0; x < SIZE; x++) {
+            for (int y = 0; y < SIZE; y++) {
+                for (int z = 0; z < SIZE; z++) {
+                    voxels[x][y][z].id = 0;
+                    voxels[x][y][z].volume = 0;
+                    voxels[x][y][z].mass = 0;
+                }
+            }
+        }
+    }
+
+    ~Chunk() {
+        if (hasMesh) UnloadMesh(mesh); // Выгружаем геометрию из видеокарты
+    }
+};
+
+// 3. ВЕРТИКАЛЬНАЯ КОЛОННА МИРА (Высота строго 256 блоков)
+class ChunkColumn {
+public:
+    static const int HEIGHT_IN_CHUNKS = 16; // 16 чанков * 16 блоков = 256 высота
+    Chunk* chunks[HEIGHT_IN_CHUNKS];
+
+    ChunkColumn() {
+        for (int i = 0; i < HEIGHT_IN_CHUNKS; i++) {
+            chunks[i] = nullptr; // Экономим память: пустой воздух не создается
+        }
+    }
+
+    ~ChunkColumn() {
+        for (int i = 0; i < HEIGHT_IN_CHUNKS; i++) {
+            if (chunks[i] != nullptr) delete chunks[i];
+        }
+    }
+
+    // Метод генерации случайного объема для теста
+    void generateRandomTest() {
+        for (int ch = 0; ch < HEIGHT_IN_CHUNKS; ch++) {
+            // Генерируем землю, например, только в нижних 4 чанках (высота 0-64)
+            if (ch < 4) {
+                if (chunks[ch] == nullptr) chunks[ch] = new Chunk();
+                
+                for (int x = 0; x < Chunk::SIZE; x++) {
+                    for (int y = 0; y < Chunk::SIZE; y++) {
+                        for (int z = 0; z < Chunk::SIZE; z++) {
+                            chunks[ch]->voxels[x][y][z].id = 1; // Камень
+                            // Задаем случайный объем от 50 до 255, чтобы грани перекосило
+                            chunks[ch]->voxels[x][y][z].volume = (unsigned char)GetRandomValue(50, 255);
+                            chunks[ch]->voxels[x][y][z].mass = 10;
+                        }
+                    }
+                }
+                chunks[ch]->isDirty = true;
+            }
+        }
+    }
+};

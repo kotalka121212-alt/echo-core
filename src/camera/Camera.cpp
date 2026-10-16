@@ -33,8 +33,8 @@ void FlyCamera::update(float deltaTime) {
 void FlyCamera::updateFlyMode(float deltaTime) {
     Vector2 mouseDelta = GetMouseDelta();
 
-    yaw   += mouseDelta.x * mouseSensitivity;
-    pitch -= mouseDelta.y * mouseSensitivity;
+    yaw   += mouseDelta.x * mouseSensitivity  * 0.01;
+    pitch -= mouseDelta.y * mouseSensitivity  * 0.01;
 
     if (pitch > 89.0f)  pitch = 89.0f;
     if (pitch < -89.0f) pitch = -89.0f;
@@ -99,7 +99,7 @@ void FlyCamera::updateFollowMode(float deltaTime) {
     camera.position.y = Lerp(camera.position.y, idealPosition.y, smoothness * deltaTime);
     camera.position.z = Lerp(camera.position.z, idealPosition.z, smoothness * deltaTime);
 
-    // Камера смотрит строго на цель
+    
     camera.target = targetPos;
 }
 
